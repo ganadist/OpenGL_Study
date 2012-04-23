@@ -10,6 +10,7 @@ Last update: 2006/11/12 (Geometry Shader Support)
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <algorithm>
