@@ -3,19 +3,23 @@ varying vec3 v;
 
 void main (void)  
 {  
+   /* 광원 벡터 (광원점에서 반사면에 대한  */
    vec3 L = normalize(gl_LightSource[0].position.xyz - v);   
+   /* 시점 벡터, v는 관찰자 -> 표면으로 향하는 벡터이기 때문에
+      반대방향으로 주어지면 표면 -> 관찰자로 향하는 벡터가 된다.*/
    vec3 E = normalize(-v); // we are in Eye Coordinates, so EyePos is (0,0,0)  
+   /* 반사광 벡터 */
    vec3 R = normalize(-reflect(L,N));  
  
    //calculate Ambient Term:  
    vec4 Iamb = gl_FrontLightProduct[0].ambient;    
 
-   //calculate Diffuse Term:  
+   //calculate Diffuse Term: // dot(N,L) = theta  
    vec4 Idiff = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);    
    
-   // calculate Specular Term:
-   vec4 Ispec = gl_FrontLightProduct[0].specular 
-                * pow(max(dot(R,E),0.0),0.3*gl_FrontMaterial.shininess);
+   // calculate Specular Term: // dot(R,E) = pi
+   vec4 Ispec = gl_FrontLightProduct[0].specular
+               * pow(max(dot(R,E),0.0),0.3*gl_FrontMaterial.shininess);
 
    // write Total Color:  
    gl_FragColor = gl_FrontLightModelProduct.sceneColor + Iamb + Idiff + Ispec;   

@@ -4,9 +4,12 @@ varying vec3 v;
 void main(void)
 {
 
+   /* 반사면 */
    v = vec3(gl_ModelViewMatrix * gl_Vertex);       
+   /* 반사면의 법선 벡터 */
    N = normalize(gl_NormalMatrix * gl_Normal);
 
+   /* vertex position 업데이트 */
    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
 
