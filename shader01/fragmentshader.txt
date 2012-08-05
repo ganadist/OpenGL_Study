@@ -1,0 +1,29 @@
+uniform sampler2D blur;
+const float factor = 0.02;
+
+void main()
+{
+  vec4 color = texture2D(blur, gl_TexCoord[0].st);
+
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s + factor, gl_TexCoord[0].t));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s + factor, gl_TexCoord[0].t + factor));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s, gl_TexCoord[0].t + factor));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s - factor, gl_TexCoord[0].t));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s - factor, gl_TexCoord[0].t - factor));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s, gl_TexCoord[0].t - factor));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s + factor, gl_TexCoord[0].t - factor));
+  color += texture2D(blur,
+  		vec2(gl_TexCoord[0].s - factor, gl_TexCoord[0].t + factor));
+
+  vec4 final = color/9.0f;
+  final.w = final.r;
+
+  gl_FragColor = final;
+} 
