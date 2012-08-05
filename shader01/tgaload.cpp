@@ -21,7 +21,7 @@
 */
 
 #include <windows.h>
-#include <GL\glu.h>
+#include <GL/glu.h>
 #include <stdio.h>
 #include <mem.h>
 #include "tgaload.h"
@@ -37,9 +37,9 @@ bool tgaCompressedTexSupport = true;
 void tgaGetExtensions ( void )
 {  
    glCompressedTexImage2DARB  = ( PFNGLCOMPRESSEDTEXIMAGE2DARBPROC  ) 
-                   wglGetProcAddress ( "glCompressedTexImage2DARB"  );
+                   glXGetProcAddressARB ( (const GLubyte *)"glCompressedTexImage2DARB"  );
    glGetCompressedTexImageARB = ( PFNGLGETCOMPRESSEDTEXIMAGEARBPROC ) 
-                   wglGetProcAddress ( "glGetCompressedTexImageARB" );
+                   glXGetProcAddressARB ( (const GLubyte *)"glGetCompressedTexImageARB" );
    
    if ( glCompressedTexImage2DARB == NULL || glGetCompressedTexImageARB == NULL )
    	tgaCompressedTexSupport = false;

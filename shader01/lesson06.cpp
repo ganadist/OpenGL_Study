@@ -1,8 +1,9 @@
 #include <windows.h>
 #include <stdio.h>
-#include <gl\gl.h>
-#include <gl\glu.h>
-#include <gl\glut.h>
+#include "glsl.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 #include "tgaload.h"
 
 #define MAX_NO_TEXTURES 1
@@ -16,12 +17,27 @@ float yrot;
 float zrot;
 float ratio;
 
-void init(void)
+cwc::glShaderManager manager;
+cwc::glShader *shader = 0;
+GLuint ProgramObject = 0;
+int useShader = 1;
+
+void init(char *arg)
 {
    glShadeModel(GL_SMOOTH);							// Enable Smooth Shading
 	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);				// Black Background
    glEnable ( GL_COLOR_MATERIAL );
    glColorMaterial ( GL_FRONT, GL_AMBIENT_AND_DIFFUSE );
+
+   shader = manager.loadfromFile( "vertexshader.txt",  "fragmentshader.txt");
+
+   if (shader == 0) {
+           printf("shader init failed");
+
+   } else {
+           ProgramObject = shader->GetProgramObject();
+           shader->disable();
+   }
 
 	glEnable ( GL_TEXTURE_2D );
    glPixelStorei ( GL_UNPACK_ALIGNMENT, 1 );
@@ -65,6 +81,7 @@ void display( void )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
    glLoadIdentity ( );
    glPushMatrix();
+   if (useShader && shader) shader->begin();
    glTranslatef ( 0.0, 0.0, -5.0 );
    glRotatef ( xrot, 1.0, 0.0, 0.0 );
    glRotatef ( yrot, 0.0, 1.0, 0.0 );
@@ -105,6 +122,7 @@ void display( void )
 		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
 	glEnd();
    glPopMatrix();
+   if (useShader && shader) shader->end();
    xrot+=0.3f;
 	yrot+=0.2f;
 	zrot+=0.4f;
@@ -131,26 +149,33 @@ void arrow_keys ( int a_keys, int x, int y )  // Create Special Function (requir
     case GLUT_KEY_DOWN:               // When Down Arrow Is Pressed...
       glutReshapeWindow ( 500, 500 ); // Go Into A 500 By 500 Window
       break;
+    case GLUT_KEY_LEFT:
+      if(shader) shader->enable();
+      break;
+    case GLUT_KEY_RIGHT:
+      if(shader) shader->disable();
+      break;
     default:
       break;
   }
 }
 
-void main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
+int main ( int argc, char** argv )   // Create Main Function For Bringing It All Together
 {
   glutInit            ( &argc, argv ); // Erm Just Write It =)
   glutInitDisplayMode ( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA ); // Display Mode
   glutInitWindowPosition (0,0);
   glutInitWindowSize  ( 500, 500 ); // If glutFullScreen wasn't called this is the window size
   glutCreateWindow    ( "NeHe Lesson 6- Ported by Rustad" ); // Window Title (argv[0] for current directory as title)
-  init ();
-  glutFullScreen      ( );          // Put Into Full Screen
+  init (argv[1]);
   glutDisplayFunc     ( display );  // Matching Earlier Functions To Their Counterparts
   glutReshapeFunc     ( reshape );
   glutKeyboardFunc    ( keyboard );
   glutSpecialFunc     ( arrow_keys );
   glutIdleFunc			 ( display );
+  glutReshapeWindow ( 500, 500 ); // Go Into A 500 By 500 Window
   glutMainLoop        ( );          // Initialize The Main Loop
+  return 0;
 }
 
 
