@@ -129,6 +129,12 @@ void display( void )
    glutSwapBuffers();
 }
 
+void timer(int value) {
+  display();
+  glutTimerFunc(10, timer, 0);
+}
+
+
 void keyboard ( unsigned char key, int x, int y )  // Create Keyboard Function
 {
   switch ( key ) {
@@ -172,7 +178,8 @@ int main ( int argc, char** argv )   // Create Main Function For Bringing It All
   glutReshapeFunc     ( reshape );
   glutKeyboardFunc    ( keyboard );
   glutSpecialFunc     ( arrow_keys );
-  glutIdleFunc			 ( display );
+  //glutIdleFunc			 ( display );
+  glutTimerFunc		 (10, timer, 0);
   glutReshapeWindow ( 500, 500 ); // Go Into A 500 By 500 Window
   glutMainLoop        ( );          // Initialize The Main Loop
   return 0;
